@@ -1,9 +1,8 @@
-namespace RESTSample.Core.Interfaces{
+namespace RESTSample.Core.Interfaces;
 
-    public interface IDeviceInteractionService
-    {
-        void CreateOne(Entities.DeviceInteraction dvi);
-        Entities.DeviceInteraction GetById(int id);
+public interface IDeviceInteractionService
+{
+    void CreateInteraction(Entities.DeviceInteraction dvi);
+    Entities.DeviceInteraction GetInteraction(int id);
 
-    }
 }

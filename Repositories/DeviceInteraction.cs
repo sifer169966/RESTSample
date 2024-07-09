@@ -1,5 +1,5 @@
 
-namespace RESTSample.Repositories{
+namespace RESTSample.Repositories;
 
 
 public class DeviceInteractionRepository : Core.Interfaces.IDeviceInteractionRepository
@@ -10,16 +10,16 @@ public class DeviceInteractionRepository : Core.Interfaces.IDeviceInteractionRep
             _context = context;
         }
 
-        public Core.Entities.DeviceInteraction GetById(int id)
+        public Core.Entities.DeviceInteraction GetByID(int id)
         {
             Infrastructure.DeviceInteraction? deviceInteraction = null;
             try 
             {
                 deviceInteraction = _context.DeviceInteraction.Find(id);
             } 
-            catch (Exception ex)
+            catch (Exception e)
             {
-               Console.WriteLine(ex);
+               Console.WriteLine(e);
                throw new Errors.Business.InternalError();
             }
 
@@ -27,7 +27,7 @@ public class DeviceInteractionRepository : Core.Interfaces.IDeviceInteractionRep
                throw new Errors.Business.ResourceNotFound("not found"); 
             }
             return new Core.Entities.DeviceInteraction{
-                Id = deviceInteraction.Id,
+                ID = deviceInteraction.ID,
                 Name = deviceInteraction.Name
             };
             
@@ -36,18 +36,14 @@ public class DeviceInteractionRepository : Core.Interfaces.IDeviceInteractionRep
         public void CreateOne(Core.Entities.DeviceInteraction dvi)
         {
             try {
-                Console.WriteLine("inserting into db...");
-                Console.WriteLine(dvi.Name);
                 _context.Add(new Infrastructure.DeviceInteraction{
                     Name = dvi.Name
                 });
                 _context.SaveChanges();
-            } catch (Exception ex) {
-                  Console.WriteLine("inn catch");
-                Console.WriteLine(ex);
-                throw new Errors.Business.InternalError();
+            } catch (Exception e) {
+                Console.WriteLine(e);
+                throw new Errors.Business.InternalError(e);
             }
         }
 
     }
-}

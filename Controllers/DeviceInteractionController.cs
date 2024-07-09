@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RESTSample.Core.Interfaces;
 using System.Text.Json.Serialization;
@@ -13,12 +12,21 @@ public class CreateDeviceInteractionRequest
 public class DeviceInteractionResponse
 {
     [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public int ID { get; set; }
 
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
     // Other properties
+}
+
+public class ErrorResponse
+{
+    [JsonPropertyName("code")]
+    public required string Code { get; set; }
+
+    [JsonPropertyName("message")]
+    public required string Message { get; set; }
 }
 
 [ApiController]
@@ -32,28 +40,31 @@ public class DeviceInteractionsController : ControllerBase
     }
 
     
-    [HttpGet("{id}", Name = "GetById")]
-    public ActionResult GetById([FromRoute(Name = "id")] int id)
+    [HttpGet("{id}", Name = "GetInteraction")]
+    public ActionResult GetInteraction([FromRoute(Name = "id")] int id)
     {
-        var dvi = _dviSvc.GetById(id);
-        return Ok(new DeviceInteractionResponse{ Id = dvi.Id, Name = dvi.Name});
+        var dvi = _dviSvc.GetInteraction(id);
+        return Ok(new DeviceInteractionResponse{ ID = dvi.ID, Name = dvi.Name});
     }
 
-    [HttpPost(Name = "Create")]
-    public ActionResult Create(CreateDeviceInteractionRequest body)
+    [HttpPost(Name = "CreateInteraction")]
+    public ActionResult CreateInteraction(CreateDeviceInteractionRequest body)
     {
          var dvi = new Core.Entities.DeviceInteraction{
             Name = body.Name,
         };
-        Console.WriteLine(dvi.Name);
         try {
-             _dviSvc.CreateOne(dvi);
+             _dviSvc.CreateInteraction(dvi);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            return StatusCode(500, new ErrorResponse{
+                Code = "ERR-001",
+                Message = ex.Message,
+            });
         }
-    Console.WriteLine("got request");
+        
         return Ok();
     }
 }
